@@ -5,11 +5,13 @@ import {
   CodeOutlined,
   FileTextOutlined,
   HistoryOutlined,
+  DashboardOutlined,
 } from '@ant-design/icons';
 import MachineManagement from './components/MachineManagement';
 import TerminalPanel from './components/TerminalPanel';
 import ScriptLibrary from './components/ScriptLibrary';
 import LogViewer from './components/LogViewer';
+import ExecutionDashboard from './components/ExecutionDashboard';
 import { useAppStore } from './store';
 import { wsService } from './services/websocket';
 
@@ -68,6 +70,16 @@ const App: React.FC = () => {
         </span>
       ),
       children: <LogViewer />,
+    },
+    {
+      key: 'dashboard',
+      label: (
+        <span>
+          <DashboardOutlined />
+          执行看板
+        </span>
+      ),
+      children: <ExecutionDashboard />,
     },
   ];
 

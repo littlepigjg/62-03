@@ -19,6 +19,79 @@ class ScriptExecuteRequest(BaseModel):
     timeout: int = 300
 
 
+class EngineExecuteRequest(BaseModel):
+    server_ids: List[str]
+    command: Optional[str] = None
+    script_content: Optional[str] = None
+    script_name: Optional[str] = "script.sh"
+    interpreter: str = "bash"
+    args: List[str] = Field(default_factory=list)
+    timeout: int = 300
+    env: Dict[str, str] = Field(default_factory=dict)
+    name: str = ""
+    grouping_strategy: str = "auto"
+    max_retries: int = 3
+    max_batch_size: int = 50
+    order_by: str = "server_id"
+
+
+class BatchResumeRequest(BaseModel):
+    batch_id: str
+
+
+class JobProgressResponse(BaseModel):
+    job_id: str
+    name: str
+    status: str
+    total_tasks: int
+    completed_tasks: int
+    running_tasks: int
+    pending_tasks: int
+    failed_tasks: int
+    success_tasks: int
+    progress_pct: float
+    batches: List[Dict[str, Any]]
+    resource_usage: Dict[str, Any]
+    start_time: Optional[str]
+    estimated_finish_time: Optional[str]
+
+
+class TaskResultResponse(BaseModel):
+    task_id: str
+    server_id: str
+    server_name: str
+    exit_code: Optional[int]
+    stdout: str
+    stderr: str
+    start_time: Optional[str]
+    end_time: Optional[str]
+    status: str
+    retry_count: int
+    duration: float
+    error_message: Optional[str]
+
+
+class ServerHeatmapResponse(BaseModel):
+    server_id: str
+    server_name: str
+    host: str
+    tags: List[str]
+    avg_duration: float
+    success_rate: float
+    total_executions: int
+    performance_score: float
+
+
+class JobPlanResponse(BaseModel):
+    job_id: str
+    name: str
+    total_tasks: int
+    total_batches: int
+    grouping_strategy: str
+    created_at: str
+    batches: List[Dict[str, Any]]
+
+
 class TemplateCreateRequest(BaseModel):
     name: str
     description: Optional[str] = ""

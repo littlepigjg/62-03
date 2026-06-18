@@ -6,6 +6,12 @@ import type {
   LogEntry,
   CommandExecuteRequest,
   ScriptExecuteRequest,
+  EngineExecuteRequest,
+  JobPlanResponse,
+  JobProgressResponse,
+  TaskResultResponse,
+  ServerHeatmapResponse,
+  EngineStatusResponse,
 } from '../types';
 
 const api = axios.create({
@@ -63,6 +69,29 @@ export const logsApi = {
     api.get('/logs/dates').then(r => r.data),
   getByTask: (taskId: string): Promise<LogEntry> =>
     api.get(`/logs/${taskId}`).then(r => r.data),
+};
+
+export const engineApi = {
+  executeCommand: (data: EngineExecuteRequest): Promise<JobPlanResponse> =>
+    api.post('/engine/command', data).then(r => r.data),
+  executeScript: (data: EngineExecuteRequest): Promise<JobPlanResponse> =>
+    api.post('/engine/script', data).then(r => r.data),
+  listJobs: (): Promise<JobPlanResponse[]> =>
+    api.get('/engine/jobs').then(r => r.data),
+  getJobProgress: (jobId: string): Promise<JobProgressResponse> =>
+    api.get(`/engine/jobs/${jobId}/progress`).then(r => r.data),
+  getJobResults: (jobId: string, orderBy = 'server_id'): Promise<TaskResultResponse[]> =>
+    api.get(`/engine/jobs/${jobId}/results`, { params: { order_by: orderBy } }).then(r => r.data),
+  resumeBatch: (batchId: string): Promise<{ status: string; message: string }> =>
+    api.post('/engine/batches/resume', { batch_id: batchId }).then(r => r.data),
+  getHeatmap: (): Promise<ServerHeatmapResponse[]> =>
+    api.get('/engine/heatmap').then(r => r.data),
+  getStatus: (): Promise<EngineStatusResponse> =>
+    api.get('/engine/status').then(r => r.data),
+  shutdownGraceful: (): Promise<{ status: string; message: string }> =>
+    api.post('/engine/shutdown/graceful').then(r => r.data),
+  shutdownForce: (): Promise<{ status: string; message: string }> =>
+    api.post('/engine/shutdown/force').then(r => r.data),
 };
 
 export default api;
